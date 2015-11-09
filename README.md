@@ -10,7 +10,7 @@ Send and receive SMS with PHP (for Czech Republic)
 
 via composer:
 
-    $ composer require pryznar/sms-connect
+    $ composer require neogenia/sms-connect
 
 ## Usage
 
