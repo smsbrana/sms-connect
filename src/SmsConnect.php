@@ -100,7 +100,7 @@ class SmsConnect
 			$get[] = $key . '=' . $item;
 		}
 
-		return implode('&', $get);
+		return self:: API_URL . '?' . implode('&', $get);
 	}
 
 
@@ -120,15 +120,15 @@ class SmsConnect
 
 
 	/**
-	 * @param $params
+	 * @param $url
 	 * @return mixed
 	 */
-	protected function makeRequest($params)
+	protected function makeRequest($url)
 	{
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
 		    CURLOPT_RETURNTRANSFER => 1,
-		    CURLOPT_URL => self::API_URL . '?' . $params,
+		    CURLOPT_URL => $url,
 		    CURLOPT_USERAGENT => self::USER_AGENT,
 		));
 		$resp = curl_exec($curl);
