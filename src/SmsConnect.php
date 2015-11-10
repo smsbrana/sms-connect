@@ -38,7 +38,7 @@ class SmsConnect
 		$requestUrl = $this->getRequestUrl($this->authData);
 		$response = $this->makeRequest($requestUrl);
 
-		return $this->convertToJson($response);
+		return $this->convertToArray($response);
 	}
 
 
@@ -139,10 +139,10 @@ class SmsConnect
 
 
 	/**
-	 * @param $xmlString
+	 * @param string $xmlString
 	 * @return array
 	 */
-	protected function convertToJson($xmlString)
+	protected function convertToArray($xmlString)
 	{
 		$xml = simplexml_load_string($xmlString);
 		$json = json_encode($xml);
