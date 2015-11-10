@@ -23,9 +23,7 @@ $smsConnect->getInbox();
 
 ### Send SMS
 
-```ruby
-require 'smsconnect'
-
+```php
 $smsConnect = new SmsConnect('<your_login>', '<secret_password>');
 $smsConnect->sendSms('<phone_number>', '<text_sms>');
 ```
