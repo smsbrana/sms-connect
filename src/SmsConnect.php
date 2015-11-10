@@ -18,23 +18,25 @@ class SmsConnect
 	const USER_AGENT = 'SmsConnect PHP v2.0';
 
 
+	/**
+	 * @param string $login
+	 * @param string $password
+	 */
 	public function __construct($login, $password)
 	{
 		$this->authData = $this->getAuth($login, $password);
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function getInbox()
 	{
 		$this->authData['action'] = self::ACTION_INBOX;
 
-		$get = array();
-		foreach ($this->authData as $key => $item) {
-			$get[] = $key . '=' . $item;
-		}
-
-		$params = implode('&', $get);
-		$response = $this->makeRequest($params);
+		$requestUrl = $this->getRequestUrl($this->authData);
+		$response = $this->makeRequest($requestUrl);
 
 		return $this->convertToJson($response);
 	}
@@ -51,13 +53,8 @@ class SmsConnect
 		$this->authData['number'] = $number;
 		$this->authData['message'] = urlencode($text);
 
-		$get = array();
-		foreach ($this->authData as $key => $item) {
-			$get[] = $key . '=' . $item;
-		}
-
-		$params = implode('&', $get);
-		$response = $this->makeRequest($params);
+		$requestUrl = $this->getRequestUrl($this->authData);
+		$response = $this->makeRequest($requestUrl);
 
 		return $this->convertToJson($response);
 	}
@@ -89,6 +86,21 @@ class SmsConnect
 		);
 
 		return $authData;
+	}
+
+
+	/**
+	 * @param array $authData
+	 * @return string
+	 */
+	protected function getRequestUrl($authData)
+	{
+		$get = array();
+		foreach ($authData as $key => $item) {
+			$get[] = $key . '=' . $item;
+		}
+
+		return implode('&', $get);
 	}
 
 
