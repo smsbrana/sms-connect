@@ -30,10 +30,28 @@ $smsConnect = new SmsConnect('<your_login>', '<secret_password>');
 $smsConnect->sendSms('<phone_number>', '<text_sms>');
 ```
 
-## Contributing
+## Using as extension in Nette Framework
 
-1. Fork it ( https://github.com/[my-github-username]/smsconnect/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+config.neon
+```yml
+extensions:
+	smsconnect: Neogate\SmsConnect\SmsConnectExtension
+```
+
+config.local.neon
+```yml
+smsconnect:
+	login: 'your_login'
+	password: 'secret_password'
+```
+
+finally inject extension
+```php
+/** @var SmsConnect */
+private $smsConnect;
+
+public function injectSmsConnectExtension(SmsConnect $smsConnect)
+{
+    $this->smsConnect = $smsConnect;
+}
+```
