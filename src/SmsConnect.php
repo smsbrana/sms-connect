@@ -56,7 +56,7 @@ class SmsConnect
 		$requestUrl = $this->getRequestUrl($this->authData);
 		$response = $this->makeRequest($requestUrl);
 
-		return $this->convertToJson($response);
+		return $this->convertToArray($response);
 	}
 
 
