@@ -13,6 +13,11 @@ class RuntimeException extends \RuntimeException
 }
 
 
+class InvalidStateException extends RuntimeException
+{
+}
+
+
 class LogicException extends \LogicException
 {
 }

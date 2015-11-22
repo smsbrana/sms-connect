@@ -159,11 +159,30 @@ class SmsConnect
 	protected function validateResponse($response)
 	{
 		if (isset($response['err'])) {
-			if ($response['err'] === '2' || $response['err'] === '3') {
+			if ($response['err'] === '1') {
+				throw new RuntimeException('Unknown error');
+
+			} elseif ($response['err'] === '2' || $response['err'] === '3') {
 				throw new MemberAccessException('Incorrect login or password');
-			}
-			if ($response['err'] === '11') {
+
+			} elseif ($response['err'] === '5') {
+				throw new InvalidStateException('Disallowed remote IP, see your SmsConnect setting');
+
+			} elseif ($response['err'] === '8') {
+				throw new InvalidStateException('Database connection error');
+
+			} elseif ($response['err'] === '9') {
+				throw new InvalidStateException('No credit');
+
+			} elseif ($response['err'] === '10') {
+				throw new InvalidArgumentException('Invalid recipient number');
+
+			} elseif ($response['err'] === '11') {
 				throw new InvalidArgumentException('Empty sms text');
+
+			} elseif ($response['err'] === '12') {
+				throw new InvalidArgumentException('Text is too long, allowed maximum is 495 chars');
+
 			}
 		}
 	}
