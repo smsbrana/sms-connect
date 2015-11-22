@@ -68,11 +68,11 @@ class SmsConnect
 	protected function getAuth($login, $password)
 	{
 		if ($login === NULL) {
-			throw new \InvalidArgumentException('Empty login');
+			throw new InvalidArgumentException('Empty login');
 		}
 
 		if ($password === NULL) {
-			throw new \InvalidArgumentException('Empty password');
+			throw new InvalidArgumentException('Empty password');
 		}
 
 		$time = date("Ymd")."T".date("His");
