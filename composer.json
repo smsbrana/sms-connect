@@ -15,6 +15,10 @@
     "require": {
         "php": ">=5.3.0"
     },
+	"require-dev": {
+		"nette/tester":     "~1.4",
+		"mockery/mockery":  "~0.9"
+	},
     "minimum-stability": "dev",
     "autoload": {
         "classmap": [
