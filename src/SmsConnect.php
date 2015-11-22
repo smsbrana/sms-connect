@@ -36,9 +36,9 @@ class SmsConnect
 		$this->authData['action'] = self::ACTION_INBOX;
 
 		$requestUrl = $this->getRequestUrl($this->authData);
-		$response = $this->makeRequest($requestUrl);
+		$response = $this->getRequest($requestUrl);
 
-		return $this->convertToArray($response);
+		return $response;
 	}
 
 
@@ -54,9 +54,9 @@ class SmsConnect
 		$this->authData['message'] = urlencode($text);
 
 		$requestUrl = $this->getRequestUrl($this->authData);
-		$response = $this->makeRequest($requestUrl);
+		$response = $this->getRequest($requestUrl);
 
-		return $this->convertToArray($response);
+		return $response;
 	}
 
 
@@ -112,7 +112,7 @@ class SmsConnect
 	    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
 	    $string = '';
 	    for ($p = 0; $p < $length; $p++) {
-	        $string .= $characters[mt_rand(0, strlen($characters))];
+	        $string .= $characters[mt_rand(0, strlen($characters - 1))];
 	    }
 
 	    return $string;
@@ -131,10 +131,41 @@ class SmsConnect
 		    CURLOPT_URL => $url,
 		    CURLOPT_USERAGENT => self::USER_AGENT,
 		));
-		$resp = curl_exec($curl);
+		$response = curl_exec($curl);
 		curl_close($curl);
 
-		return $resp;
+		$response = $this->convertToArray($response);
+
+		return $response;
+	}
+
+
+	/**
+	 * @param string $url
+	 * @return array
+	 */
+	protected function getRequest($url)
+	{
+		$response = $this->makeRequest($url);
+		$this->validateResponse($response);
+
+		return $response;
+	}
+
+
+	/**
+	 * @param array $response
+	 */
+	protected function validateResponse($response)
+	{
+		if (isset($response['err'])) {
+			if ($response['err'] === '2' || $response['err'] === '3') {
+				throw new MemberAccessException('Incorrect login or password');
+			}
+			if ($response['err'] === '11') {
+				throw new InvalidArgumentException('Empty sms text');
+			}
+		}
 	}
 
 
