@@ -6,8 +6,11 @@ namespace Neogate\SmsConnect;
 class SmsConnect
 {
 
-	/** @var array */
-	private $authData;
+	/** @var string */
+	private $login;
+
+	/** @var string */
+	private $password;
 
 	const API_URL = 'http://api.smsbrana.cz/smsconnect/http.php';
 
@@ -24,7 +27,16 @@ class SmsConnect
 	 */
 	public function __construct($login, $password)
 	{
-		$this->authData = $this->getAuth($login, $password);
+		if ($login === NULL) {
+			throw new InvalidArgumentException('Empty login');
+		}
+
+		if ($password === NULL) {
+			throw new InvalidArgumentException('Empty password');
+		}
+
+		$this->login = $login;
+		$this->password = $password;
 	}
 
 
@@ -33,9 +45,9 @@ class SmsConnect
 	 */
 	public function getInbox()
 	{
-		$this->authData['action'] = self::ACTION_INBOX;
+		$authData['action'] = self::ACTION_INBOX;
 
-		$requestUrl = $this->getRequestUrl($this->authData);
+		$requestUrl = $this->getRequestUrl($authData);
 		$response = $this->getRequest($requestUrl);
 
 		return $response;
@@ -49,11 +61,12 @@ class SmsConnect
 	 */
 	public function sendSms($number, $text)
 	{
-		$this->authData['action'] = self::ACTION_SEND_SMS;
-		$this->authData['number'] = $number;
-		$this->authData['message'] = urlencode($text);
+		$authData = $this->getAuth($this->login, $this->password);
+		$authData['action'] = self::ACTION_SEND_SMS;
+		$authData['number'] = $number;
+		$authData['message'] = urlencode($text);
 
-		$requestUrl = $this->getRequestUrl($this->authData);
+		$requestUrl = $this->getRequestUrl($authData);
 		$response = $this->getRequest($requestUrl);
 
 		return $response;
@@ -67,14 +80,6 @@ class SmsConnect
 	 */
 	protected function getAuth($login, $password)
 	{
-		if ($login === NULL) {
-			throw new InvalidArgumentException('Empty login');
-		}
-
-		if ($password === NULL) {
-			throw new InvalidArgumentException('Empty password');
-		}
-
 		$time = date("Ymd")."T".date("His");
 		$salt = $this->getSalt(10);
 
@@ -112,7 +117,7 @@ class SmsConnect
 	    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
 	    $string = '';
 	    for ($p = 0; $p < $length; $p++) {
-	        $string .= $characters[mt_rand(0, strlen($characters - 1))];
+	        $string .= $characters[mt_rand(0, strlen($characters) - 1)];
 	    }
 
 	    return $string;
