@@ -12,9 +12,14 @@ class SmsConnect
 	/** @var string */
 	private $password;
 
-	const API_URL = 'http://api.smsbrana.cz/smsconnect/http.php';
+	/** @var \SimpleXMLElement */
+	private $queue;
+
+	const API_URL = 'https://api.smsbrana.cz/smsconnect/http.php';
 
 	const ACTION_SEND_SMS = 'send_sms';
+
+	const ACTION_SEND_BULK = 'xml_queue';
 
 	const ACTION_INBOX = 'inbox';
 
@@ -72,6 +77,36 @@ class SmsConnect
 		return $response;
 	}
 
+	/**
+	 * @param string $number
+	 * @param string $text
+	 * @param string|NULL $time
+	 */
+	public function addRecipient($number, $text, $time = NULL)
+	{
+		if (!$this->queue) {
+			$this->queue = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><queue></queue>');
+		}
+		$sms = $this->queue->addChild("sms");
+		$sms->addChild("number", $this->xmlEncode($number));
+		$sms->addChild("message", $this->xmlEncode($text));
+		$sms->addChild("when", $this->xmlEncode($time));
+		$sms->addChild("sender_id", '');
+		$sms->addChild("delivery_report", '');
+		dump($this->queue);
+	}
+
+
+	public function sendBulk()
+	{
+		$authData = $this->getAuth($this->login, $this->password);
+		$authData['action'] = self::ACTION_SEND_BULK;
+
+		$requestUrl = $this->getRequestUrl($authData);
+
+		return $this->getRequest($requestUrl, 'POST', $this->queue->asXML());
+	}
+
 
 	/**
 	 * @param string $login
@@ -125,17 +160,27 @@ class SmsConnect
 
 
 	/**
-	 * @param $url
+	 * @param string $url
+	 * @param string $method
+	 * @param string $data|NULL
 	 * @return mixed
 	 */
-	protected function makeRequest($url)
+	protected function makeRequest($url, $method = 'GET', $data = NULL)
 	{
 		$curl = curl_init();
-		curl_setopt_array($curl, array(
+
+		$curlOpt = array(
 		    CURLOPT_RETURNTRANSFER => 1,
 		    CURLOPT_URL => $url,
 		    CURLOPT_USERAGENT => self::USER_AGENT,
-		));
+		);
+
+		if ($method === 'POST') {
+			$curlOpt[CURLOPT_POST] = 1;
+			$curlOpt[CURLOPT_POSTFIELDS] = $data;
+		}
+
+		curl_setopt_array($curl, $curlOpt);
 		$response = curl_exec($curl);
 		curl_close($curl);
 
@@ -147,11 +192,13 @@ class SmsConnect
 
 	/**
 	 * @param string $url
+	 * @param string $method
+	 * @param string $data|NULL
 	 * @return array
 	 */
-	protected function getRequest($url)
+	protected function getRequest($url, $method = 'GET', $data = NULL)
 	{
-		$response = $this->makeRequest($url);
+		$response = $this->makeRequest($url, $method, $data);
 		$this->validateResponse($response);
 
 		return $response;
@@ -202,6 +249,15 @@ class SmsConnect
 		$xml = simplexml_load_string($xmlString);
 		$json = json_encode($xml);
 		return json_decode($json,TRUE);
+	}
+
+	/**
+	 * @param $string
+	 * @return string
+	 */
+	protected function xmlEncode($string)
+	{
+		return htmlspecialchars(preg_replace('#[\x00-\x08\x0B\x0C\x0E-\x1F]+#', '', $string), ENT_QUOTES);
 	}
 
 }
