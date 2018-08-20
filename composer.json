@@ -1,15 +1,15 @@
 {
-    "name": "neogenia/sms-connect",
+    "name": "smsbrana/sms-connect",
     "type": "library",
     "description": "Send and receive SMS with PHP",
     "keywords": ["sms"],
-    "homepage": "https://github.com/neogenia/sms-connect",
+    "homepage": "https://github.com/smsbrana/sms-connect",
     "license": "MIT",
     "authors": [
         {
             "name": "Pavel Ryznar",
             "email": "pryznar@gmail.com",
-            "homepage": "https://github.com/neogenia/sms-connect/graphs/contributors"
+            "homepage": "https://github.com/smsbrana/sms-connect/graphs/contributors"
         }
     ],
     "require": {
