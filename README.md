@@ -28,6 +28,12 @@ $smsConnect = new SmsConnect('<your_login>', '<secret_password>');
 $smsConnect->sendSms('<phone_number>', '<text_sms>');
 ```
 
+### Send bulk
+```php
+$smsConnect->addRecipient('<phone_number>', '<text_sms>');
+$smsConnect->addRecipient('<another_number>', '<another_sms>');
+$smsConnect->sendBulk();
+```
 ## Using as extension in Nette Framework
 
 config.neon
