@@ -105,8 +105,10 @@ class SmsConnect
 		$authData['action'] = self::ACTION_SEND_BULK;
 
 		$requestUrl = $this->getRequestUrl($authData);
+		$request = $this->getRequest($requestUrl, 'POST', $this->queue->asXML());
+		$this->queue = NULL;
 
-		return $this->getRequest($requestUrl, 'POST', $this->queue->asXML());
+		return $request;
 	}
 
 
