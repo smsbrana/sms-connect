@@ -50,6 +50,7 @@ class SmsConnect
 	 */
 	public function getInbox()
 	{
+		$authData = $this->getAuth($this->login, $this->password);
 		$authData['action'] = self::ACTION_INBOX;
 
 		$requestUrl = $this->getRequestUrl($authData);
