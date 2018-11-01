@@ -67,15 +67,17 @@ class SmsConnect
 	 * @param string $number phone number of receiver
 	 * @param string $text message for receiver
 	 * @param string $sender
+	 * @param string|NULL $userId
 	 * @return array
 	 */
-	public function sendSms($number, $text, $sender = '')
+	public function sendSms($number, $text, $sender = '', $userId = NULL)
 	{
 		$authData = $this->getAuth($this->login, $this->password);
 		$authData['action'] = self::ACTION_SEND_SMS;
 		$authData['number'] = $number;
 		$authData['message'] = urlencode($text);
 		$authData['sender_id'] = $sender;
+		$authData['user_id'] = $userId;
 
 		$requestUrl = $this->getRequestUrl($authData);
 		$response = $this->getRequest($requestUrl);
@@ -88,8 +90,9 @@ class SmsConnect
 	 * @param string $text
 	 * @param string|NULL $time
 	 * @param string $sender
+	 * @param string|NULL $userId
 	 */
-	public function addRecipient($number, $text, $time = NULL, $sender = '')
+	public function addRecipient($number, $text, $time = NULL, $sender = '', $userId = NULL)
 	{
 		if (!$this->queue) {
 			$this->queue = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><queue></queue>');
@@ -100,6 +103,7 @@ class SmsConnect
 		$sms->addChild("when", $this->xmlEncode($time));
 		$sms->addChild("sender_id", $this->xmlEncode($sender));
 		$sms->addChild("delivery_report", '');
+		$sms->addChild('user_id', $userId);
 	}
 
 
