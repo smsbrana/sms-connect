@@ -3,6 +3,9 @@
 namespace Neogate\SmsConnect;
 
 
+use SimpleXMLElement;
+
+
 class SmsConnect
 {
 
@@ -50,6 +53,7 @@ class SmsConnect
 	 */
 	public function getInbox()
 	{
+		$authData = $this->getAuth($this->login, $this->password);
 		$authData['action'] = self::ACTION_INBOX;
 
 		$requestUrl = $this->getRequestUrl($authData);
@@ -188,7 +192,7 @@ class SmsConnect
 		$response = curl_exec($curl);
 		curl_close($curl);
 
-		$response = $this->convertToArray($response);
+		$response = $this->convertToArray(simplexml_load_string($response));
 
 		return $response;
 	}
@@ -245,14 +249,16 @@ class SmsConnect
 
 
 	/**
-	 * @param string $xmlString
+	 * @param SimpleXMLElement $xml
 	 * @return array
 	 */
-	protected function convertToArray($xmlString)
+	protected function convertToArray($xml)
 	{
-		$xml = simplexml_load_string($xmlString);
-		$json = json_encode($xml);
-		return json_decode($json,TRUE);
+		foreach ( (array) $xml as $index => $node ) {
+			$out[$index] = (is_object($node)) ? $this->convertToArray($node) : $node;
+		}
+
+		return $out;
 	}
 
 	/**
