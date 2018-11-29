@@ -28,6 +28,8 @@ class SmsConnect
 
 	const USER_AGENT = 'SmsConnect PHP v2.0';
 
+	private $priorities = array(-1, 0, 1, 2, 3);
+
 
 	/**
 	 * @param string $login
@@ -69,9 +71,10 @@ class SmsConnect
 	 * @param string $sender
 	 * @param string|NULL $userId
 	 * @param int $deliveryReport
+	 * @param int $priority
 	 * @return array
 	 */
-	public function sendSms($number, $text, $sender = '', $userId = NULL, $deliveryReport = 1)
+	public function sendSms($number, $text, $sender = '', $userId = NULL, $deliveryReport = 1, $priority = 1)
 	{
 		$authData = $this->getAuth($this->login, $this->password);
 		$authData['action'] = self::ACTION_SEND_SMS;
@@ -80,6 +83,10 @@ class SmsConnect
 		$authData['sender_id'] = $sender;
 		$authData['user_id'] = $userId;
 		$authData['delivery_report'] = $deliveryReport;
+		if (in_array($priority, $this->priorities)) {
+			throw new InvalidArgumentException('Incorrect priority argument');
+		}
+		$authData['priority'] = $priority;
 
 		$requestUrl = $this->getRequestUrl($authData);
 		$response = $this->getRequest($requestUrl);
@@ -94,8 +101,9 @@ class SmsConnect
 	 * @param string $sender
 	 * @param string|NULL $userId
 	 * @param int $deliveryReport
+	 * @param int $priority
 	 */
-	public function addRecipient($number, $text, $time = NULL, $sender = '', $userId = NULL, $deliveryReport = 1)
+	public function addRecipient($number, $text, $time = NULL, $sender = '', $userId = NULL, $deliveryReport = 1, $priority = 1)
 	{
 		if (!$this->queue) {
 			$this->queue = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><queue></queue>');
@@ -107,6 +115,10 @@ class SmsConnect
 		$sms->addChild("sender_id", $this->xmlEncode($sender));
 		$sms->addChild("delivery_report", $deliveryReport);
 		$sms->addChild('user_id', $userId);
+		if (in_array($priority, $this->priorities)) {
+			throw new InvalidArgumentException('Incorrect priority argument');
+		}
+		$sms->addChild('priority', $priority);
 	}
 
 
