@@ -83,7 +83,7 @@ class SmsConnect
 		$authData['sender_id'] = $sender;
 		$authData['user_id'] = $userId;
 		$authData['delivery_report'] = $deliveryReport;
-		if (in_array($priority, $this->priorities)) {
+		if (!in_array($priority, $this->priorities)) {
 			throw new InvalidArgumentException('Incorrect priority argument');
 		}
 		$authData['priority'] = $priority;
@@ -115,7 +115,7 @@ class SmsConnect
 		$sms->addChild("sender_id", $this->xmlEncode($sender));
 		$sms->addChild("delivery_report", $deliveryReport);
 		$sms->addChild('user_id', $userId);
-		if (in_array($priority, $this->priorities)) {
+		if (!in_array($priority, $this->priorities)) {
 			throw new InvalidArgumentException('Incorrect priority argument');
 		}
 		$sms->addChild('priority', $priority);
