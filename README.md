@@ -17,6 +17,7 @@ via composer:
 ### Inbox
 
 ```php
+use \Neogate\SmsConnect\SmsConnect;
 $smsConnect = new SmsConnect('<your_login>', '<secret_password>');
 $smsConnect->getInbox();
 ```
@@ -24,6 +25,7 @@ $smsConnect->getInbox();
 ### Send SMS
 
 ```php
+use \Neogate\SmsConnect\SmsConnect;
 $smsConnect = new SmsConnect('<your_login>', '<secret_password>');
 $smsConnect->sendSms('<phone_number>', '<text_sms>');
 ```
