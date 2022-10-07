@@ -21,6 +21,7 @@
 		"phpstan/phpstan":  "^1.8"
 	},
 	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"autoload": {
 		"classmap": [
 			"src/"
