@@ -53,6 +53,52 @@ code-linter-5.5:
     PHP_VERSION: "5.5"
 
 
+.unit-tests: &unit-tests
+  image: php:${PHP_VERSION}
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y curl unzip ca-certificates
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install
+  script:
+    - vendor/bin/tester tests
+
+unit-tests-8.1:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "8.1"
+
+unit-tests-8.0:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "8.0"
+
+unit-tests-7.3:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.3"
+
+unit-tests-7.2:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.2"
+
+unit-tests-7.1:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.1"
+
+unit-tests-7.0:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.0"
+
+unit-tests-5.6:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "5.6"
+
+
 .phpstan: &phpstan
   image: php:8.1
   stage: test
@@ -60,6 +106,7 @@ code-linter-5.5:
     - apt-get update && apt-get install -y curl unzip
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install
+    - composer require --dev phpstan/phpstan
     - composer require --dev nette/di "${NETTE_DI_VERSION}"
   script:
     - vendor/bin/phpstan analyse
