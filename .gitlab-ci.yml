@@ -1,0 +1,127 @@
+stages:
+  - test
+
+.code-linter: &code-linter
+  image: php:${PHP_VERSION}
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y --force-yes curl unzip ca-certificates
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - rm composer.json
+    - composer require --dev php-parallel-lint/php-parallel-lint
+  script:
+    - vendor/bin/parallel-lint src/
+
+code-linter-8.1:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "8.1"
+
+code-linter-8.0:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "8.0"
+
+code-linter-7.3:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "7.3"
+
+code-linter-7.2:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "7.2"
+
+code-linter-7.1:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "7.1"
+
+code-linter-7.0:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "7.0"
+
+code-linter-5.6:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "5.6"
+
+code-linter-5.5:
+  <<: *code-linter
+  variables:
+    PHP_VERSION: "5.5"
+
+
+.unit-tests: &unit-tests
+  image: php:${PHP_VERSION}
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y curl unzip ca-certificates
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install
+  script:
+    - vendor/bin/tester tests
+
+unit-tests-8.1:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "8.1"
+
+unit-tests-8.0:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "8.0"
+
+unit-tests-7.3:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.3"
+
+unit-tests-7.2:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.2"
+
+unit-tests-7.1:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.1"
+
+unit-tests-7.0:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "7.0"
+
+unit-tests-5.6:
+  <<: *unit-tests
+  variables:
+    PHP_VERSION: "5.6"
+
+
+.phpstan: &phpstan
+  image: php:8.1
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y curl unzip
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install
+    - composer require --dev phpstan/phpstan
+    - composer require --dev nette/di "${NETTE_DI_VERSION}"
+  script:
+    - vendor/bin/phpstan analyse
+
+phpstan-nette-di-3.0:
+  <<: *phpstan
+  variables:
+    NETTE_DI_VERSION: "^3.0"
+
+phpstan-nette-di-2.4:
+  <<: *phpstan
+  variables:
+    NETTE_DI_VERSION: "^2.4"
+
+phpstan-nette-di-2.3:
+  <<: *phpstan
+  variables:
+    NETTE_DI_VERSION: "^2.3"

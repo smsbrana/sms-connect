@@ -17,7 +17,7 @@ class SmsConnectExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 
 		$builder->addDefinition($this->prefix('smsconnect'))
-			->setClass(SmsConnect::class, [
+			->setFactory(SmsConnect::class, [
 				$config['login'],
 				$config['password'],
 			]);

@@ -1,28 +1,30 @@
 {
-    "name": "smsbrana/sms-connect",
-    "type": "library",
-    "description": "Send and receive SMS with PHP",
-    "keywords": ["sms"],
-    "homepage": "https://github.com/smsbrana/sms-connect",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Pavel Ryznar",
-            "email": "pryznar@gmail.com",
-            "homepage": "https://github.com/smsbrana/sms-connect/graphs/contributors"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0"
-    },
-	"require-dev": {
-		"nette/tester":     "~1.4",
-		"mockery/mockery":  "~0.9"
+	"name": "smsbrana/sms-connect",
+	"type": "library",
+	"description": "Send and receive SMS with PHP",
+	"keywords": ["sms"],
+	"homepage": "https://github.com/smsbrana/sms-connect",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Pavel Ryznar",
+			"email": "pryznar@gmail.com",
+			"homepage": "https://github.com/smsbrana/sms-connect/graphs/contributors"
+		}
+	],
+	"require": {
+		"php": ">=5.5.0"
 	},
-    "minimum-stability": "dev",
-    "autoload": {
-        "classmap": [
-            "src/"
-        ]
-    }
+	"require-dev": {
+		"nette/tester":     "@stable",
+		"mockery/mockery":  "@stable",
+		"php-parallel-lint/php-parallel-lint": "@stable"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"autoload": {
+		"classmap": [
+			"src/"
+		]
+	}
 }

@@ -15,7 +15,7 @@ class SmsConnect
 	/** @var string */
 	private $password;
 
-	/** @var \SimpleXMLElement */
+	/** @var ?\SimpleXMLElement */
 	private $queue;
 
 	const API_URL = 'https://api.smsbrana.cz/smsconnect/http.php';
@@ -37,11 +37,11 @@ class SmsConnect
 	 */
 	public function __construct($login, $password)
 	{
-		if ($login === NULL) {
+		if (empty($login)) {
 			throw new InvalidArgumentException('Empty login');
 		}
 
-		if ($password === NULL) {
+		if (empty($password)) {
 			throw new InvalidArgumentException('Empty password');
 		}
 
@@ -113,12 +113,12 @@ class SmsConnect
 		$sms->addChild("message", $this->xmlEncode($text));
 		$sms->addChild("when", $this->xmlEncode($time));
 		$sms->addChild("sender_id", $this->xmlEncode($sender));
-		$sms->addChild("delivery_report", $deliveryReport);
+		$sms->addChild("delivery_report", (string) $deliveryReport);
 		$sms->addChild('user_id', $userId);
 		if (!in_array($priority, $this->priorities)) {
 			throw new InvalidArgumentException('Incorrect priority argument');
 		}
-		$sms->addChild('priority', $priority);
+		$sms->addChild('priority', (string) $priority);
 	}
 
 
@@ -273,10 +273,10 @@ class SmsConnect
 	 */
 	protected function convertToArray($xml)
 	{
+		$out = array();
 		foreach ( (array) $xml as $index => $node ) {
 			$out[$index] = (is_object($node)) ? $this->convertToArray($node) : $node;
 		}
-
 		return $out;
 	}
 
@@ -286,6 +286,9 @@ class SmsConnect
 	 */
 	protected function xmlEncode($string)
 	{
+		if(empty($string)) {
+			return '';
+		}
 		return htmlspecialchars(preg_replace('#[\x00-\x08\x0B\x0C\x0E-\x1F]+#', '', $string), ENT_QUOTES);
 	}
 
