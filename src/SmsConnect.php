@@ -79,7 +79,7 @@ class SmsConnect
 		$authData = $this->getAuth($this->login, $this->password);
 		$authData['action'] = self::ACTION_SEND_SMS;
 		$authData['number'] = $number;
-		$authData['message'] = urlencode($text);
+		$authData['message'] = $text;
 		$authData['sender_id'] = $sender;
 		$authData['user_id'] = $userId;
 		$authData['delivery_report'] = $deliveryReport;
@@ -162,12 +162,7 @@ class SmsConnect
 	 */
 	protected function getRequestUrl($authData)
 	{
-		$get = array();
-		foreach ($authData as $key => $item) {
-			$get[] = $key . '=' . $item;
-		}
-
-		return self:: API_URL . '?' . implode('&', $get);
+		return self:: API_URL . '?' . \http_build_query($authData, '', '&', \PHP_QUERY_RFC3986);
 	}
 
 
