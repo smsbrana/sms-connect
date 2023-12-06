@@ -53,7 +53,7 @@ $smsConnect->shouldReceive('makeRequest')->andReturn(['err' => '12']);
 
 Assert::exception(function() use ($smsConnect) {
 	$smsConnect->sendSms('+420602111111', 'Lorem ipsum');
-}, 'Neogate\SmsConnect\InvalidArgumentException', 'Text is too long, allowed maximum is 495 chars');
+}, 'Neogate\SmsConnect\InvalidArgumentException', 'Text is too long');
 
 
 // Unknown error

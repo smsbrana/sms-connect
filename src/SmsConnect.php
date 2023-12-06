@@ -255,7 +255,7 @@ class SmsConnect
 				throw new InvalidArgumentException('Empty sms text');
 
 			} elseif ($response['err'] === '12') {
-				throw new InvalidArgumentException('Text is too long, allowed maximum is 495 chars');
+				throw new InvalidArgumentException('Text is too long');
 
 			}
 		}
