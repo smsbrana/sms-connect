@@ -142,7 +142,7 @@ class SmsConnect
 	 */
 	protected function getAuth($login, $password)
 	{
-		$time = date("Ymd")."T".date("His");
+		$time = date("c");
 		$salt = $this->getSalt(10);
 
 		$authData = array(
@@ -239,6 +239,9 @@ class SmsConnect
 			} elseif ($response['err'] === '2' || $response['err'] === '3') {
 				throw new MemberAccessException('Incorrect login or password');
 
+			} elseif ($response['err'] === '4') {
+				throw new InvalidStateException('Request timestamp is not valid. Check time on your machine.');
+
 			} elseif ($response['err'] === '5') {
 				throw new InvalidStateException('Disallowed remote IP, see your SmsConnect setting');
 
@@ -256,8 +259,8 @@ class SmsConnect
 
 			} elseif ($response['err'] === '12') {
 				throw new InvalidArgumentException('Text is too long');
-
 			}
+			throw new InvalidStateException('API response with error ('.$response['err'].')');
 		}
 	}
 
