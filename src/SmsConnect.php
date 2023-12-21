@@ -232,7 +232,7 @@ class SmsConnect
 	 */
 	protected function validateResponse($response)
 	{
-		if (isset($response['err'])) {
+		if (isset($response['err']) && !empty($response['err'])) {
 			if ($response['err'] === '1') {
 				throw new RuntimeException('Unknown error');
 
